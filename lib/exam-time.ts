@@ -62,5 +62,5 @@ export function isExamClosed(status: string) {
 }
 
 export function canCheckIn(status: string) {
-  return isExamLive(status);
+  return !isExamClosed(status);
 }

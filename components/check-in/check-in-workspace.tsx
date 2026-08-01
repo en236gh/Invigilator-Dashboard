@@ -79,8 +79,7 @@ export function CheckInWorkspace({
     onExpire: syncAfterExpire,
   });
 
-  const checkInAllowed =
-    !!selected && canCheckIn(selected.examStatus) && !expired;
+  const checkInAllowed = !!selected && canCheckIn(selected.examStatus);
 
   function onLookup() {
     if (!selected) {
@@ -91,9 +90,7 @@ export function CheckInWorkspace({
       toast.error(
         isExamClosed(selected.examStatus)
           ? "This exam has ended. Check-in is closed."
-          : expired
-            ? "Exam time is up. Check-in is locked."
-            : "Start this exam from the dashboard first.",
+          : "Check-in is unavailable for this exam.",
       );
       return;
     }
@@ -148,8 +145,9 @@ export function CheckInWorkspace({
         <div>
           <h2 className="text-lg font-semibold text-ink">Check-in</h2>
           <p className="text-sm text-muted">
-            Sessions are started from the dashboard. Only in-progress exams
-            accept check-ins.
+            Session start/end is tracked from the dashboard for timing only. The
+            check-in flow remains available whenever the exam is assigned and not
+            completed.
           </p>
         </div>
 
@@ -171,9 +169,7 @@ export function CheckInWorkspace({
           <div className="rounded-[10px] bg-surface-muted px-4 py-3 text-sm text-muted">
             {isExamClosed(selected.examStatus)
               ? "This session is completed. Use the attendance register or reports."
-              : expired
-                ? "Time is up — waiting for the server to close the session."
-                : "This exam is not in progress. Open Dashboard → Start exam, then return here."}
+              : "Check-in is unavailable for this exam."}
           </div>
         ) : null}
 
