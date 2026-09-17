@@ -27,8 +27,8 @@ export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
           type="email"
           autoComplete="username"
           required
-          defaultValue="invigilator@unza.zm"
-          placeholder="invigilator@unza.zm"
+          defaultValue="admin@unza.zm"
+          placeholder="admin@unza.zm"
           className={loginInputClass}
         />
       </div>
@@ -54,7 +54,7 @@ export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
           type="password"
           autoComplete="current-password"
           required
-          defaultValue="Invig@2026"
+          defaultValue="Admin@2026"
           placeholder="••••••••"
           className={loginInputClass}
         />
@@ -96,7 +96,7 @@ export function LoginPage({ nextPath = "/dashboard" }: { nextPath?: string }) {
       <div className="flex min-h-[calc(100vh-220px)] items-center justify-center bg-white px-8 py-12 sm:px-12 lg:min-h-screen lg:px-16">
         <div className="w-full max-w-sm">
           <h1 className="text-2xl font-semibold tracking-tight text-black">
-            Sign in As invigilator
+            Sign in as administrator
           </h1>
 
           <div className="mt-8">

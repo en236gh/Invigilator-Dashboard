@@ -8,7 +8,8 @@ import {
   DocumentChartBarIcon,
   ExclamationTriangleIcon,
   HomeIcon,
-  QrCodeIcon,
+  AcademicCapIcon,
+  UserPlusIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { logoutAction } from "@/lib/actions/auth";
@@ -16,10 +17,11 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard", label: "dashboard", icon: HomeIcon },
-  { href: "/check-in", label: "check-in", icon: QrCodeIcon },
+  { href: "/examinations", label: "examinations", icon: AcademicCapIcon },
   { href: "/attendance", label: "attendance", icon: ClipboardDocumentListIcon },
   { href: "/incidents", label: "incidents", icon: ExclamationTriangleIcon },
   { href: "/reports", label: "reports", icon: DocumentChartBarIcon },
+  { href: "/staff", label: "staff onboarding", icon: UserPlusIcon },
 ];
 
 export function AppSidebar() {

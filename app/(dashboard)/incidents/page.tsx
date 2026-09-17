@@ -1,9 +1,8 @@
 import { AppShell } from "@/components/layout/app-shell";
-import { IncidentsWorkspace } from "@/components/incidents/incidents-workspace";
-import { getAssignments } from "@/lib/api/assignments";
 import { listIncidents } from "@/lib/api/incidents";
 import { getSessionUser } from "@/lib/auth/session";
-import type { Assignment, Incident } from "@/lib/types/api";
+import { Badge } from "@/components/ui/badge";
+import type { Incident } from "@/lib/types/api";
 
 export const metadata = {
   title: "Incidents",
@@ -13,15 +12,11 @@ export default async function IncidentsPage() {
   const user = await getSessionUser();
   if (!user) return null;
 
-  let assignments: Assignment[] = [];
   let incidents: Incident[] = [];
   let error: string | undefined;
 
   try {
-    [assignments, incidents] = await Promise.all([
-      getAssignments(),
-      listIncidents(),
-    ]);
+    incidents = await listIncidents();
   } catch (err) {
     error = err instanceof Error ? err.message : "Could not load incidents.";
   }
@@ -34,7 +29,7 @@ export default async function IncidentsPage() {
             {error}
           </div>
         ) : null}
-        <IncidentsWorkspace assignments={assignments} incidents={incidents} />
+        <section className="rounded-[10px] bg-white p-6 shadow-sm"><h2 className="text-lg font-semibold text-ink">System-wide incident log</h2><p className="mb-4 text-sm text-muted">Administrators can review incidents; reporting is an invigilator workflow.</p><div className="space-y-3">{incidents.map(i=><article key={i.incidentId} className="rounded-[10px] bg-surface-muted p-4"><div className="flex justify-between gap-3"><p className="font-semibold text-ink">{i.incidentType.replaceAll("_", " ")}</p><Badge tone={i.severity === "CRITICAL" ? "danger" : i.severity === "MAJOR" ? "warning" : "neutral"}>{i.severity}</Badge></div><p className="mt-2 text-sm text-ink">{i.description}</p><p className="mt-2 text-xs text-muted">{i.courseCode ?? "Exam"} · {i.venueName ?? "Venue"} · {i.computerNumber ?? "No student specified"}</p></article>)}{!incidents.length&&<p className="py-10 text-center text-sm text-muted">No incidents have been recorded.</p>}</div></section>
       </div>
     </AppShell>
   );

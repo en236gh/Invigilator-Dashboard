@@ -9,61 +9,27 @@ export type LoginResponse = {
   refreshToken?: string;
 };
 
-export type DashboardStats = {
-  assignedExaminations: number;
-  assignedVenues: number;
-  checkedInStudents: number;
-  absentStudents: number;
-  scriptsCollected: number;
-  incidents: number;
+export type AdminDashboardStats = {
+  todaysExaminations?: number;
+  todaysExaminationDetails?: Examination[];
+  present?: number;
+  absent?: number;
+  attendancePercentage?: number;
+  totalIncidents?: number;
+  todaysIncidents?: number;
+  generatedReports?: number;
+  venueOccupancy?: VenueOccupancy[];
 };
 
-export type Lecturer = {
-  staffId: number;
-  staffNo: string;
-  fullName: string;
-  email: string;
-  department: string;
-};
+export type VenueOccupancy = { examSessionId?: number; courseCode?: string; venueId?: number; venueName?: string; capacity?: number; allocatedStudents?: number; checkedInStudents?: number; occupancyPercentage?: number };
+export type Examination = { examSessionId: number; courseCode: string; courseName?: string; examDate: string; startTime: string; endTime: string; academicYear?: string; semester?: string; examType?: string; status: string };
+export type RegisteredStudent = { computerNumber: string; fullName: string; programme?: string; program?: string; yearOfStudy?: number | string; photoPath?: string | null; registrationStatus?: string };
+export type ExamVenue = { venueId: number; venueName: string; building?: string; capacity?: number };
+export type AllocationStatistics = { registeredStudents?: number; allocatedStudents?: number; totalVenueCapacity?: number; venueFills?: VenueOccupancy[]; allocations?: Array<{ computerNumber?: string; studentName?: string; venueName?: string; seatNumber?: string }> };
+export type GeneratedReport = { reportId?: number; examSessionId?: number | { examSessionId?: number; courseCode?: string }; generatedBy?: unknown; title?: string; reportType?: string; filePath?: string; generatedAt?: string; summary?: string; [key: string]: unknown };
+export type StaffAccountPayload = { fullName: string; email: string; phone: string; department: string; role: "LECTURER" | "INVIGILATOR" };
+export type StaffAccount = StaffAccountPayload & { staffId?: number; accountStatus: "PENDING" | string; activationToken: string; expiresAt?: string };
 
-export type Assignment = {
-  examSessionId: number;
-  courseCode: string;
-  examDate: string;
-  startTime: string;
-  endTime: string;
-  examStatus: string;
-  venueId: number;
-  venueName: string;
-  building?: string;
-  capacity?: number;
-  lecturers: Lecturer[];
-};
-
-export type StudentLookup = {
-  computerNumber: string;
-  fullName: string;
-  program: string;
-  photoPath?: string | null;
-  allocatedVenueId: number;
-  allocatedVenueName: string;
-  seatNumber?: string | null;
-  alreadyCheckedIn: boolean;
-};
-
-export type CheckInPayload = {
-  computerNumber: string;
-  examSessionId: number;
-  venueId: number;
-  verificationMethod: "COMPUTER";
-};
-
-export type CheckInResult = {
-  attendanceStatus: "PRESENT" | "WRONG_VENUE" | string;
-  computerNumber?: string;
-  studentName?: string;
-  checkInTime?: string;
-};
 
 export type AttendanceRecord = {
   computerNumber: string;
@@ -95,15 +61,6 @@ export type IncidentType =
 
 export type IncidentSeverity = "MINOR" | "MAJOR" | "CRITICAL";
 
-export type IncidentPayload = {
-  examSessionId: number;
-  venueId: number;
-  computerNumber?: string;
-  incidentType: IncidentType;
-  description: string;
-  severity: IncidentSeverity;
-  evidencePath?: string;
-};
 
 export type Incident = {
   incidentId: number;
@@ -120,13 +77,6 @@ export type Incident = {
   status?: string;
 };
 
-export type ReportResult = {
-  reportId?: number;
-  examSessionId?: number;
-  generatedAt?: string;
-  fileName?: string;
-  [key: string]: unknown;
-};
 
 export type SessionUser = {
   email: string;

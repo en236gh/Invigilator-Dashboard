@@ -57,12 +57,12 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const name =
     jar.get(USER_NAME_COOKIE)?.value ||
     email.split("@")[0]?.replace(/[._]/g, " ") ||
-    "Invigilator";
+    "Administrator";
 
   return {
     email,
     name: name.replace(/\b\w/g, (c) => c.toUpperCase()),
-    role: "invigilator",
+    role: "administrator",
   };
 }
 

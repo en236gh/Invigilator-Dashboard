@@ -65,7 +65,7 @@ export function Tile({
 
   const classes = cn(
     "group relative flex min-h-[160px] flex-col overflow-hidden rounded-[10px] border border-transparent bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.04)] transition-colors duration-200",
-    accents[accent],
+    interactive ? accents[accent] : "",
     className,
   );
 

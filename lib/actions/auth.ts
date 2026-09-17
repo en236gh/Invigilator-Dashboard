@@ -13,7 +13,7 @@ import {
 import { REFRESH_SKEW_MS } from "@/lib/constants";
 
 function displayNameFromEmail(email: string) {
-  const local = email.split("@")[0] ?? "Invigilator";
+  const local = email.split("@")[0] ?? "Administrator";
   return local
     .replace(/[._0-9]+/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase())

@@ -1,6 +1,6 @@
-# UNZA Invigilator Dashboard
+# UNZA Administrator Dashboard
 
-Frontend for the Digital Examination Attendance System — invigilator role.
+Frontend for the Digital Examination Attendance System — administrator role.
 
 ## Stack
 
@@ -20,22 +20,23 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Backend API default: `http://localhost:8080` (`API_BASE_URL`).
+Backend API default: `https://fourth-91rl.onrender.com` (`API_BASE_URL`).
 
 ## Demo login
 
 | Field | Value |
 |-------|-------|
-| Email | `invigilator@unza.zm` |
-| Password | `Invig@2026` |
+| Email | `admin@unza.zm` |
+| Password | `Admin@2026` |
 
 ## Screens
 
 - **Login** — `POST /api/auth/login`
-- **Dashboard** — stats tiles + quick-action tiles + assignments
-- **Check-in** — lookup + verify + check-in
-- **Attendance** — register, summary, scripts collected
-- **Incidents** — report + list
-- **Reports** — generate exam-session report metadata
+- **Dashboard** — system-wide activity and venue occupancy
+- **Staff onboarding** — create pending lecturer and invigilator accounts
+- **Examinations** — examination, venue, allocation, and registration oversight
+- **Attendance** — read-only register and summary
+- **Incidents** — system-wide incident review
+- **Reports** — generated report index
 
 See `public/INVIGILATOR_FRONTEND.md` and the Postman collection for the full API contract.

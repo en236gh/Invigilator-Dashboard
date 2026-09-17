@@ -8,7 +8,8 @@ import {
 } from "@/lib/auth/session";
 import type { ApiEnvelope, LoginResponse } from "@/lib/types/api";
 
-const API_BASE_URL = process.env.API_BASE_URL ?? "http://localhost:8080";
+const API_BASE_URL =
+  process.env.API_BASE_URL ?? "https://fourth-91rl.onrender.com";
 
 export class ApiError extends Error {
   status: number;
@@ -96,7 +97,7 @@ export async function apiRequest<T>(
     headers["Content-Type"] = "application/json";
   }
 
-  let token = options.token ?? (auth ? await getAccessToken() : null);
+  const token = options.token ?? (auth ? await getAccessToken() : null);
   if (auth && token) {
     headers.Authorization = `Bearer ${token}`;
   }
