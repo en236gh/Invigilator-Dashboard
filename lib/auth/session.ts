@@ -51,8 +51,7 @@ export async function getAccessExpiresAt() {
 export async function getSessionUser(): Promise<SessionUser | null> {
   const jar = await cookies();
   const email = jar.get(USER_EMAIL_COOKIE)?.value;
-  const token = jar.get(ACCESS_TOKEN_COOKIE)?.value;
-  if (!email || !token) return null;
+  if (!email) return null;
 
   const name =
     jar.get(USER_NAME_COOKIE)?.value ||

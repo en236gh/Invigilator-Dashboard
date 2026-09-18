@@ -66,15 +66,14 @@ export function TokenRefreshKeeper() {
           return;
         }
 
-        // Only kick to login when the access token is already gone / expired.
-        const expiresAt = readExpiresAt();
-        if (expiresAt == null || expiresAt - Date.now() <= 0) {
+        if (result.fatal) {
           router.replace("/login");
           return;
         }
 
-        // Transient failure while access token still valid — retry mid-window.
-        scheduleNext(expiresAt);
+        // Keep retrying transient failures while the refresh token is available.
+        const expiresAt = readExpiresAt();
+        scheduleNext(expiresAt ?? Date.now() + 30_000);
       } finally {
         inFlight.current = false;
       }

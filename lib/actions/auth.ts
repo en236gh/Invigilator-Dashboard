@@ -68,7 +68,12 @@ export async function logoutAction() {
  */
 export async function refreshSessionAction(
   force = false,
-): Promise<{ ok: boolean; expiresAt?: number; message?: string }> {
+): Promise<{
+  ok: boolean;
+  expiresAt?: number;
+  message?: string;
+  fatal?: boolean;
+}> {
   const expiresAt = await getAccessExpiresAt();
   const msLeft = expiresAt == null ? 0 : expiresAt - Date.now();
 
@@ -84,7 +89,11 @@ export async function refreshSessionAction(
     if (expiresAt == null || msLeft <= 0) {
       await clearSessionCookies();
     }
-    return { ok: false, message: "Session expired." };
+    return {
+      ok: false,
+      fatal: !refreshToken,
+      message: "Session expired.",
+    };
   }
 
   try {
@@ -106,12 +115,14 @@ export async function refreshSessionAction(
     return { ok: true, expiresAt: nextExpiry ?? undefined };
   } catch (error) {
     const status = error instanceof ApiError ? error.status : 0;
-    // Hard auth failure → clear. Transient/network → keep cookies if access still valid.
-    if (status === 400 || status === 401 || status === 403 || msLeft <= 0) {
+    // Only a definitive refresh-token rejection ends the session. Network and
+    // server failures must leave the refresh token available for a later retry.
+    if (status === 400 || status === 401 || status === 403) {
       await clearSessionCookies();
     }
     return {
       ok: false,
+      fatal: status === 400 || status === 401 || status === 403,
       expiresAt: expiresAt ?? undefined,
       message:
         error instanceof ApiError

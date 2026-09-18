@@ -77,8 +77,11 @@ async function refreshAccessToken(): Promise<string | null> {
       name: user.name,
     });
     return envelope.data.accessToken;
-  } catch {
-    await clearSessionCookies();
+  } catch (error) {
+    const status = error instanceof ApiError ? error.status : 0;
+    if (status === 400 || status === 401 || status === 403) {
+      await clearSessionCookies();
+    }
     return null;
   }
 }

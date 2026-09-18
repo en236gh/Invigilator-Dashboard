@@ -10,6 +10,7 @@ import {
   HomeIcon,
   AcademicCapIcon,
   UserPlusIcon,
+  UserGroupIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { logoutAction } from "@/lib/actions/auth";
@@ -22,6 +23,7 @@ const items = [
   { href: "/incidents", label: "incidents", icon: ExclamationTriangleIcon },
   { href: "/reports", label: "reports", icon: DocumentChartBarIcon },
   { href: "/staff", label: "staff onboarding", icon: UserPlusIcon },
+  { href: "/assignments", label: "invigilator assignments", icon: UserGroupIcon },
 ];
 
 export function AppSidebar() {

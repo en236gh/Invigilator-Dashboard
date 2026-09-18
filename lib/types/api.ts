@@ -30,6 +30,34 @@ export type GeneratedReport = { reportId?: number; examSessionId?: number | { ex
 export type StaffAccountPayload = { fullName: string; email: string; phone: string; department: string; role: "LECTURER" | "INVIGILATOR" };
 export type StaffAccount = StaffAccountPayload & { staffId?: number; accountStatus: "PENDING" | string; activationToken: string; expiresAt?: string };
 
+export type InvigilatorAssignment = {
+  examSessionId: number;
+  venueId: number;
+  staffId: number;
+  status: "DRAFT" | "PUBLISHED" | "CANCELLED" | string;
+  notes?: string | null;
+  staffName?: string;
+  venueName?: string;
+  courseCode?: string;
+  assignedAt?: string;
+};
+
+export type VenueStaffing = {
+  venueId: number;
+  venueName?: string;
+  allocatedStudents?: number;
+  requiredInvigilators?: number;
+  draftCount?: number;
+  publishedCount?: number;
+  staffingStatus?: "FULLY_STAFFED" | "UNDERSTAFFED" | "OVERSTAFFED" | string;
+};
+
+export type AutoAssignResponse = {
+  assignments?: InvigilatorAssignment[];
+  createdDraftAssignments?: number;
+  understaffedVenueIds?: number[];
+};
+
 
 export type AttendanceRecord = {
   computerNumber: string;
