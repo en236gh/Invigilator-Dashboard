@@ -43,13 +43,28 @@ export type InvigilatorAssignment = {
 };
 
 export type VenueStaffing = {
+  examSessionId: number;
   venueId: number;
   venueName?: string;
-  allocatedStudents?: number;
-  requiredInvigilators?: number;
-  draftCount?: number;
-  publishedCount?: number;
-  staffingStatus?: "FULLY_STAFFED" | "UNDERSTAFFED" | "OVERSTAFFED" | string;
+  allocatedStudentCount: number;
+  requiredInvigilatorCount: number;
+  assignedInvigilatorCount: number;
+  draftInvigilatorCount: number;
+  publishedInvigilatorCount: number;
+  staffingStatus: "STAFFED" | "UNDERSTAFFED" | string;
+  assignedInvigilators: Array<{
+    staffId: number;
+    staffName: string;
+    assignmentStatus: "DRAFT" | "PUBLISHED" | string;
+  }>;
+  remainingInvigilators: Array<{
+    staffId: number;
+    staffName: string;
+    assignmentStatus: "DRAFT" | "PUBLISHED" | null;
+  }>;
+  totalActiveInvigilatorCount: number;
+  totalAssignedInvigilatorCount: number;
+  totalRemainingInvigilatorCount: number;
 };
 
 export type AutoAssignResponse = {

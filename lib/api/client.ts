@@ -51,7 +51,9 @@ async function parseEnvelope<T>(response: Response): Promise<ApiEnvelope<T>> {
   return json;
 }
 
-async function refreshAccessToken(): Promise<string | null> {
+let refreshInFlight: Promise<string | null> | null = null;
+
+async function performRefreshAccessToken(): Promise<string | null> {
   const refreshToken = await getRefreshToken();
   const user = await getSessionUser();
   if (!refreshToken || !user) {
@@ -83,6 +85,18 @@ async function refreshAccessToken(): Promise<string | null> {
       await clearSessionCookies();
     }
     return null;
+  }
+}
+
+async function refreshAccessToken(): Promise<string | null> {
+  if (refreshInFlight) return refreshInFlight;
+
+  const refreshPromise = performRefreshAccessToken();
+  refreshInFlight = refreshPromise;
+  try {
+    return await refreshPromise;
+  } finally {
+    if (refreshInFlight === refreshPromise) refreshInFlight = null;
   }
 }
 

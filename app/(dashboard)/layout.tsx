@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { TokenRefreshKeeper } from "@/components/auth/token-refresh-keeper";
+import { refreshSessionAction } from "@/lib/actions/auth";
 import { getAccessToken } from "@/lib/auth/session";
 
 export default async function DashboardGroupLayout({
@@ -7,7 +8,12 @@ export default async function DashboardGroupLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = await getAccessToken();
+  let token = await getAccessToken();
+  if (!token) {
+    const refreshed = await refreshSessionAction(true);
+    if (refreshed.ok) token = await getAccessToken();
+  }
+
   if (!token) redirect("/login");
 
   return (

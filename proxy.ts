@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ACCESS_TOKEN_COOKIE } from "@/lib/constants";
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+} from "@/lib/constants";
 
 const PUBLIC_PATHS = new Set(["/login"]);
 
@@ -20,10 +23,13 @@ export function proxy(request: NextRequest) {
   }
 
   const token = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
+  const refreshToken = request.cookies.get(REFRESH_TOKEN_COOKIE)?.value;
   const isLogin = PUBLIC_PATHS.has(pathname);
 
   // Unauthenticated users never reach protected app routes (typed URLs included).
-  if (!token && !isLogin) {
+  // Keep refresh-backed sessions alive long enough for the dashboard layout to
+  // exchange the refresh token for a new access token.
+  if (!token && !refreshToken && !isLogin) {
     const loginUrl = new URL("/login", request.url);
     if (pathname !== "/") {
       loginUrl.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
