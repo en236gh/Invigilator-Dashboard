@@ -1,0 +1,7 @@
+services:
+  administrator-dashboard:
+    build: .
+    container_name: administrator-dashboard
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
