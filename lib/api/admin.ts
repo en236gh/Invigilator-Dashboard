@@ -1,5 +1,6 @@
 import { apiRequest, getCachedJson } from "@/lib/api/client";
 import type {
+  AcademicSelection, AssignmentInput, AcademicSchool, AcademicProgramme, AcademicYear, AcademicCourse, AcademicExam,
   AdminDashboardStats,
   AllocationStatistics,
   Examination,
@@ -34,11 +35,22 @@ export const getVenueStaffing = (examSessionId: number) =>
   getCachedJson<VenueStaffing[]>(
     `/api/admin/invigilator-assignments/exam-sessions/${examSessionId}/staffing`,
   );
-export const createInvigilatorAssignment = (payload: { examSessionId: number; venueId: number; staffId: number; notes?: string }) =>
+export const createInvigilatorAssignment = (payload: AssignmentInput) =>
   apiRequest<InvigilatorAssignment>("/api/admin/invigilator-assignments", { method: "POST", body: payload });
-export const autoAssignInvigilators = (examSessionId: number) =>
-  apiRequest<AutoAssignResponse>(`/api/admin/invigilator-assignments/exam-sessions/${examSessionId}/auto-assign`, { method: "POST" });
+export const autoAssignInvigilators = (examSessionId: number, selection: AcademicSelection) =>
+  apiRequest<AutoAssignResponse>(`/api/admin/invigilator-assignments/exam-sessions/${examSessionId}/auto-assign`, { method: "POST", body: selection });
 export const cancelInvigilatorAssignment = (examSessionId: number, venueId: number, staffId: number) =>
   apiRequest<InvigilatorAssignment>(`/api/admin/invigilator-assignments/${examSessionId}/${venueId}/${staffId}/cancel`, { method: "POST" });
 export const publishInvigilatorAssignments = (examSessionId: number) =>
   apiRequest<InvigilatorAssignment[]>(`/api/admin/invigilator-assignments/exam-sessions/${examSessionId}/publish`, { method: "POST" });
+
+const academicsPath = "/api/admin/invigilator-assignments/academics";
+function academicLookup<T>(route: string, selection: Record<string, string | number> = {}) {
+  const query = new URLSearchParams(Object.entries(selection).map(([key, value]) => [key, String(value)]));
+  return getCachedJson<T[]>(academicsPath + "/" + route + (query.size ? "?" + query : ""));
+}
+export const getAssignmentSchools = () => academicLookup<AcademicSchool>("schools");
+export const getAssignmentProgrammes = (schoolId: number) => academicLookup<AcademicProgramme>("programmes", { schoolId });
+export const getAssignmentYears = (schoolId: number, programmeId: number) => academicLookup<AcademicYear>("years", { schoolId, programmeId });
+export const getAssignmentCourses = (schoolId: number, programmeId: number, yearOfStudy: number) => academicLookup<AcademicCourse>("courses", { schoolId, programmeId, yearOfStudy });
+export const getAssignmentExams = (selection: AcademicSelection) => academicLookup<AcademicExam>("exams", selection);

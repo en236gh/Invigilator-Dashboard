@@ -126,3 +126,11 @@ export type SessionUser = {
   name: string;
   role: string;
 };
+
+export type AcademicSelection = { schoolId: number; programmeId: number; yearOfStudy: number; courseCode: string };
+export type AssignmentInput = { selection: AcademicSelection; examSessionId: number; venueId: number; staffId: number; notes?: string };
+export type AcademicSchool = { school_id: number; school_name?: string };
+export type AcademicProgramme = { programme_id: number; programme_name?: string };
+export type AcademicYear = { year_of_study: number };
+export type AcademicCourse = { course_code: string; course_name?: string; semester: number | string };
+export type AcademicExam = { exam_session_id: number; course_code: string; academic_year: string; semester: number | string; exam_date: string; exam_type: string; start_time?: string; end_time?: string; status?: string };

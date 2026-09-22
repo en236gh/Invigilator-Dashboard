@@ -9,7 +9,7 @@ import {
   createStaffAccount,
   publishInvigilatorAssignments,
 } from "@/lib/api/admin";
-import type { StaffAccount, StaffAccountPayload } from "@/lib/types/api";
+import type { AcademicSelection, AssignmentInput, StaffAccount, StaffAccountPayload } from "@/lib/types/api";
 
 export type AdminActionResult<T = unknown> = { ok: boolean; message: string; data?: T };
 
@@ -23,9 +23,9 @@ export async function createStaffAction(input: StaffAccountPayload): Promise<Adm
   }
 }
 
-export async function autoAssignAction(examSessionId: number): Promise<AdminActionResult> {
+export async function autoAssignAction(examSessionId: number, selection: AcademicSelection): Promise<AdminActionResult> {
   try {
-    const data = await autoAssignInvigilators(examSessionId);
+    const data = await autoAssignInvigilators(examSessionId, selection);
     revalidatePath("/assignments");
     revalidatePath("/dashboard");
     return { ok: true, message: "Draft assignments generated for review.", data };
@@ -34,7 +34,7 @@ export async function autoAssignAction(examSessionId: number): Promise<AdminActi
   }
 }
 
-export async function createAssignmentAction(input: { examSessionId: number; venueId: number; staffId: number; notes?: string }): Promise<AdminActionResult> {
+export async function createAssignmentAction(input: AssignmentInput): Promise<AdminActionResult> {
   try {
     const data = await createInvigilatorAssignment(input);
     revalidatePath("/assignments");

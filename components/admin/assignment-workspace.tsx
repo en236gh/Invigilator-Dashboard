@@ -19,7 +19,7 @@ import {
   createAssignmentAction,
   publishAssignmentsAction,
 } from "@/lib/actions/admin";
-import type { Examination, InvigilatorAssignment, VenueStaffing } from "@/lib/types/api";
+import type { AcademicSelection, Examination, InvigilatorAssignment, VenueStaffing } from "@/lib/types/api";
 
 function statusTone(status?: string) {
   const normalizedStatus = status?.trim().toUpperCase();
@@ -34,11 +34,13 @@ function isDraftAssignment(assignment: InvigilatorAssignment) {
 }
 
 export function AssignmentWorkspace({
+  selection,
   examinations,
   selectedExam,
   staffing,
   assignments,
 }: {
+  selection: AcademicSelection;
   examinations: Examination[];
   selectedExam: Examination;
   staffing: VenueStaffing[];
@@ -73,7 +75,7 @@ export function AssignmentWorkspace({
             <p className="mt-2 max-w-2xl text-sm text-white/70">Generate a draft, review venue coverage, then publish only when every assignment is ready for operational use.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button variant="secondary" disabled={pending} onClick={() => runAction(() => autoAssignAction(selectedExam.examSessionId))}>
+            <Button variant="secondary" disabled={pending} onClick={() => runAction(() => autoAssignAction(selectedExam.examSessionId, selection))}>
               <SparklesIcon className="h-4 w-4" /> Auto-assign drafts
             </Button>
             <Button variant="primary" disabled={pending || draftCount === 0} onClick={() => { if (window.confirm("Publish all remaining draft assignments for this examination?")) runAction(() => publishAssignmentsAction(selectedExam.examSessionId)); }}>
@@ -122,7 +124,7 @@ export function AssignmentWorkspace({
       </div>
 
       {selectedAssignment && <div className="fixed inset-0 z-40 flex items-center justify-center bg-ink/40 p-4" role="dialog" aria-modal="true" aria-labelledby="review-assignment-title"><div className="w-full max-w-lg rounded-[10px] bg-white p-6 shadow-2xl"><div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-unza-gold">Draft assignment</p><h2 id="review-assignment-title" className="mt-2 text-xl font-bold text-ink">Review before publishing</h2></div><button type="button" onClick={() => setSelectedAssignment(null)} aria-label="Close review" className="rounded p-1 text-muted hover:bg-surface-muted"><XMarkIcon className="h-5 w-5" /></button></div><dl className="mt-5 space-y-3 rounded-[10px] bg-surface-muted p-4 text-sm"><div className="flex justify-between gap-4"><dt className="text-muted">Invigilator</dt><dd className="font-semibold text-ink">{selectedAssignment.staffName ?? `Staff #${selectedAssignment.staffId}`}</dd></div><div className="flex justify-between gap-4"><dt className="text-muted">Venue</dt><dd className="font-semibold text-ink">{selectedAssignment.venueName ?? `Venue #${selectedAssignment.venueId}`}</dd></div><div className="flex justify-between gap-4"><dt className="text-muted">Notes</dt><dd className="text-right text-ink">{selectedAssignment.notes || "No notes"}</dd></div></dl><p className="mt-4 text-sm text-muted">Publishing makes all remaining draft assignments for this examination available to invigilators.</p><div className="mt-6 flex justify-end gap-2"><Button variant="ghost" onClick={() => setSelectedAssignment(null)}>Keep as draft</Button><Button disabled={pending} onClick={() => { setSelectedAssignment(null); runAction(() => publishAssignmentsAction(selectedExam.examSessionId)); }}>Publish all drafts</Button></div></div></div>}
-      {manualOpen && <ManualAssignmentModal examSessionId={selectedExam.examSessionId} staffing={staffing} pending={pending} onClose={() => setManualOpen(false)} onSubmit={(input) => runAction(async () => { const result = await createAssignmentAction(input); if (result.ok) setManualOpen(false); return result; })} />}
+      {manualOpen && <ManualAssignmentModal examSessionId={selectedExam.examSessionId} staffing={staffing} pending={pending} onClose={() => setManualOpen(false)} onSubmit={(input) => runAction(async () => { const result = await createAssignmentAction({ ...input, selection }); if (result.ok) setManualOpen(false); return result; })} />}
     </div>
   );
 }
